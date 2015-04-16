@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Web;
 using System.Net.Mail;
+using System.IO;
 
 
 namespace Healthcare_System
@@ -17,6 +18,14 @@ namespace Healthcare_System
         public Feedback()
         {
             InitializeComponent();
+            FileStream fs = new FileStream(System.Environment.CurrentDirectory + @"Data.txt", FileMode.Open, FileAccess.Read);
+            StreamReader sr = new StreamReader(fs);
+            string line = sr.ReadToEnd();
+            sr.Close();
+            fs.Close();
+
+            string[] item = line.Split('\t');
+            textBox1.Text = item[1];
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -29,35 +38,29 @@ namespace Healthcare_System
                     break;
                 }
             }
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form is Main_HP)
+                {
+                    form.Show();
+                    break;
+                }
+            }
             this.Close();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             string from = textBox1.Text;
-            string to = "leon_ken92@hotmail.com";
+            string to = "cse360_maintain@hotmail.com";
             string subject = "Feedback";
-            string smtp = null;
-            int clientport = 0;
+            string smtp = "smtp.live.com";
+            int clientport = 587;
             string email = textBox1.Text;
             string password = textBox2.Text;
 
             string body = string.Format("Subject: {0} \n User Email: {1} \n Questions/Feedbacks: {2}",subject, textBox1.Text, richTextBox1.Text);
-            if (comboBox1.Text == "Yahoo")
-            {
-                smtp = "smtp.mail.yahoo.com";
-                clientport = 465;
-            }
-            else if (comboBox1.Text == "Gmail")
-            {
-                smtp = "smtp.gmail.com";
-                clientport = 465;
-            }
-            else
-            {
-                smtp = "smtp.live.com";
-                clientport = 587;
-            }
+           
             try
             {
                 MailMessage mail = new MailMessage(from, to, subject, body);
@@ -75,6 +78,15 @@ namespace Healthcare_System
                         {
                             form.Show();
                             break;
+                        }                       
+                    }
+                    this.Close();
+                    foreach (Form form in Application.OpenForms)
+                    {
+                        if (form is Main_HP)
+                        {
+                            form.Show();
+                            break;
                         }
                     }
                     this.Close();
@@ -83,13 +95,8 @@ namespace Healthcare_System
 
             catch (Exception)
             {
-                MessageBox.Show("Either your e-mail or password incorrect.", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Your password incorrect.", "Error", MessageBoxButtons.OK);
             }
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            button2.Visible = true;
         }
     }
 }

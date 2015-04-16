@@ -17,6 +17,14 @@ namespace Healthcare_System
         public DeleteAccount()
         {
             InitializeComponent();
+            FileStream fs = new FileStream(System.Environment.CurrentDirectory + @"Data.txt", FileMode.Open, FileAccess.Read);
+            StreamReader sr = new StreamReader(fs);
+            string line = sr.ReadToEnd();
+            sr.Close();
+            fs.Close();
+
+            string[] item = line.Split('\t');
+            textBox1.Text = item[1];
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -40,50 +48,36 @@ namespace Healthcare_System
             sr.Close();
             fs.Close();
 
-            string[] item = line.Split('\n');
-            string email = item[0].Remove(item[0].Length - 1);
-            string hcspassword = item[1];
+            string[] item = line.Split('\t');
+            string email = item[1];
+            string hcspassword = item[2];
 
             string from = email;
-            string to = "leon_ken92@hotmail.com";
+            string tohcp = "cse360_hcp@hotmail.com";
+            string tomaintain = "cse360_maintain@hotmail.com";
             string subject = "Delete";
-            string smtp = null;
-            int clientport = 0;
-            string body = string.Format("Subject: {0} \n User email: {0} \n Reason: {1}", subject, from, richTextBox1.Text);
-
-            if (comboBox1.Text == "yahoo")
-            {
-                smtp = "smtp.mail.yahoo.com";
-                clientport = 465;
-            }
-            else if (comboBox1.Text == "gmail")
-            {
-                smtp = "smtp.gmail.com";
-                clientport = 465;
-            }
-            else
-            {
-                smtp = "smtp.live.com";
-                clientport = 587;
-            }
+            string smtp = "smtp.live.com";
+            int clientport = 587;
+            string body = string.Format("Subject: {0} \n User email: {1} \n Reason: {2}", subject, from, richTextBox1.Text);
 
             if (email == textBox1.Text && hcspassword == textBox3.Text)
             {
                 try
                 {
-                    MailMessage mail = new MailMessage(from, to, subject, body);
+                    MailMessage mail1 = new MailMessage(from, tohcp, subject, body);
+                    MailMessage mail2 = new MailMessage(from, tomaintain, subject, body);
                     SmtpClient client = new SmtpClient(smtp);
                     client.Port = clientport;
                     client.Credentials = new System.Net.NetworkCredential(email, textBox2.Text);
                     client.EnableSsl = true;
-                    client.Send(mail);
+                    client.Send(mail1);
+                    client.Send(mail2);
 
                     if (MessageBox.Show("Your account has been deleted.", "Success", MessageBoxButtons.OK) == DialogResult.OK)
                     {
                         FileStream fsw = new FileStream(System.Environment.CurrentDirectory + @"Data.txt", FileMode.Create, FileAccess.Write);
                         StreamWriter sw = new StreamWriter(fsw);
-                        sw.WriteLine("NULL");
-                        sw.Write("NULL");
+                        sw.Write("");
                         sw.Close();
                         fsw.Close();
                         foreach (Form form in Application.OpenForms)
@@ -99,18 +93,13 @@ namespace Healthcare_System
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Either your e-mail or password incorrect.", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("Either your email password or HCS password is incorrect.", "Error", MessageBoxButtons.OK);
                 }
             }
             else
             {
-                MessageBox.Show("Either your e-mail or password incorrect.", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Either your email password or HCS password is incorrect.", "Error", MessageBoxButtons.OK);
             }
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            button2.Visible = true;
         }
     }
 }

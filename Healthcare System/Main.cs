@@ -25,7 +25,7 @@ namespace Healthcare_System
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Sign_Up signup = new Sign_Up();
+            Modify signup = new Modify();
             this.Hide();
             signup.Show();
         }

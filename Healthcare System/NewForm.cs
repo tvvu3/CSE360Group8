@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Web;
 using System.Net.Mail;
+using System.IO;
 
 namespace Healthcare_System
 {
@@ -17,15 +18,24 @@ namespace Healthcare_System
         string condition2 = null;
         string condition3 = null;
         string condition4 = null;
+        string symptom1 = null;
+        string symptom2 = null;
+        string symptom3 = null;
+        string symptom4 = null;
 
         public NewForm()
         {
             InitializeComponent();
-        }
+            timer1.Start();
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            button2.Visible = true;
+            FileStream fs = new FileStream(System.Environment.CurrentDirectory + @"Data.txt", FileMode.Open, FileAccess.Read);
+            StreamReader sr = new StreamReader(fs);
+            string line = sr.ReadToEnd();
+            sr.Close();
+            fs.Close();
+
+            string[] item = line.Split('\t');
+            textBox5.Text = item[1];
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -43,32 +53,18 @@ namespace Healthcare_System
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ConditionValue();
+            Condition();
 
             string from = textBox5.Text;
-            string to = "leon_ken92@hotmail.com";
+            string to = "cse360_hcp@hotmail.com";
             string subject = "Form";
-            string smtp = null;
-            int clientport = 0;
+            string smtp = "smtp.live.com";
+            int clientport = 587;
             string email = textBox5.Text;
             string password = textBox6.Text;
 
-            string body = string.Format("Subject: {0} \n User Email: {1} \n Pain/Symptoms(1): {2} Level: {3} \n Pain/Symptoms(2): {4} Level: {5} \n Pain/Symptoms(3): {6} Level: {7} \n Pain/Symptoms(4): {8} Level: {9} \n Comments: {10}", subject, from, textBox1.Text, condition1, textBox2.Text, condition2, textBox3.Text, condition3, textBox4.Text, condition4, richTextBox1.Text);
-            if (comboBox1.Text == "Yahoo")
-            {
-                smtp = "smtp.mail.yahoo.com";
-                clientport = 465;
-            }
-            else if (comboBox1.Text == "Gmail")
-            {
-                smtp = "smtp.gmail.com";
-                clientport = 465;
-            }
-            else
-            {
-                smtp = "smtp.live.com";
-                clientport = 587;
-            }
+            string body = string.Format("Subject: {0} \n User Email: {1} \n Pain/Symptoms(1): {2} Level: {3} \n Pain/Symptoms(2): {4} Level: {5} \n Pain/Symptoms(3): {6} Level: {7} \n Pain/Symptoms(4): {8} Level: {9} \n Comments: {10}", subject, from, symptom1, condition1, symptom2, condition2, symptom3, condition3, symptom4, condition4, richTextBox1.Text);
+            
             try
             {
                 MailMessage mail = new MailMessage(from, to, subject, body);
@@ -94,24 +90,20 @@ namespace Healthcare_System
 
             catch (Exception)
             {
-                if (MessageBox.Show("Either your e-mail or password incorrect.", "Error", MessageBoxButtons.OK) == DialogResult.OK)
+                if (MessageBox.Show("Your password incorrect.", "Error", MessageBoxButtons.OK) == DialogResult.OK)
                 {
                     textBox1.Text = null;
-                    groupBox1.Visible = false;
-
                     textBox2.Text = null;
-                    groupBox2.Visible = false;
-
                     textBox3.Text = null;
-                    groupBox3.Visible = false;
-
                     textBox4.Text = null;
+                    condition1 = null;
+                    condition2 = null;
+                    condition3 = null;
+                    condition4 = null;
+                    groupBox1.Visible = false;
+                    groupBox2.Visible = false;
+                    groupBox3.Visible = false;
                     groupBox4.Visible = false;
-
-                    richTextBox1.Text = null;
-                    comboBox1.Text = null;
-                    textBox5.Text = null;
-                    textBox6.Text = null;                    
                 }
             }
         }
@@ -140,7 +132,7 @@ namespace Healthcare_System
             radioButton10.Checked = true;
         }
 
-        private void ConditionValue()
+        private void timer1_Tick(object sender, EventArgs e)
         {
             if (radioButton1.Checked == true)
             {
@@ -150,9 +142,13 @@ namespace Healthcare_System
             {
                 condition1 = radioButton2.Text;
             }
-            else
+            else if (radioButton3.Checked == true)
             {
                 condition1 = radioButton3.Text;
+            }
+            else
+            {
+                condition1 = "Null";
             }
             if (radioButton4.Checked == true)
             {
@@ -162,9 +158,13 @@ namespace Healthcare_System
             {
                 condition2 = radioButton5.Text;
             }
-            else
+            else if (radioButton6.Checked == true)
             {
                 condition2 = radioButton6.Text;
+            }
+            else
+            {
+                condition2 = "Null";
             }
             if (radioButton7.Checked == true)
             {
@@ -174,9 +174,13 @@ namespace Healthcare_System
             {
                 condition3 = radioButton8.Text;
             }
-            else
+            else if (radioButton9.Checked == true)
             {
                 condition3 = radioButton9.Text;
+            }
+            else
+            {
+                condition3 = "Null";
             }
             if (radioButton10.Checked == true)
             {
@@ -186,9 +190,110 @@ namespace Healthcare_System
             {
                 condition4 = radioButton11.Text;
             }
-            else
+            else if (radioButton12.Checked == true)
             {
                 condition4 = radioButton12.Text;
+            }
+            else
+            {
+                condition4 = "Null";
+            }
+
+            if (textBox1.TextLength < 1)
+            {
+                groupBox1.Visible = false;
+                radioButton1.Visible = false;
+                radioButton2.Visible = false;
+                radioButton3.Visible = false;
+            }
+            else
+            {
+                groupBox1.Visible = true;
+                radioButton1.Visible = true;
+                radioButton2.Visible = true;
+                radioButton3.Visible = true;
+            }
+            if (textBox2.TextLength < 1)
+            {
+                groupBox2.Visible = false;
+                radioButton4.Visible = false;
+                radioButton5.Visible = false;
+                radioButton6.Visible = false;
+            }
+            else
+            {
+                groupBox2.Visible = true;
+                radioButton4.Visible = true;
+                radioButton5.Visible = true;
+                radioButton6.Visible = true;
+            }
+            if (textBox3.TextLength < 1)
+            {
+                groupBox3.Visible = false;
+                radioButton7.Visible = false;
+                radioButton8.Visible = false;
+                radioButton9.Visible = false;
+            }
+            else
+            {
+                groupBox3.Visible = true;
+                radioButton7.Visible = true;
+                radioButton8.Visible = true;
+                radioButton9.Visible = true;
+            }
+            if (textBox4.TextLength < 1)
+            {
+                groupBox4.Visible = false;
+                radioButton10.Visible = false;
+                radioButton11.Visible = false;
+                radioButton12.Visible = false;
+            }
+            else
+            {
+                groupBox4.Visible = true;
+                radioButton10.Visible = true;
+                radioButton11.Visible = true;
+                radioButton12.Visible = true;
+            }
+        }
+
+        public void Condition()
+        {
+            if (textBox1.TextLength < 1)
+            {
+                symptom1 = "Null";
+                condition1 = "Null";
+            }
+            else
+            {
+                symptom1 = textBox1.Text;
+            }
+            if (textBox2.TextLength < 1)
+            {
+                symptom2 = "Null";
+                condition2 = "Null";
+            }
+            else
+            {
+                symptom2 = textBox2.Text;
+            }
+            if (textBox3.TextLength < 1)
+            {
+                symptom3 = "Null";
+                condition3 = "Null";
+            }
+            else
+            {
+                symptom3 = textBox3.Text;
+            }
+            if (textBox4.TextLength < 1)
+            {
+                symptom4 = "Null";
+                condition4 = "Null";
+            }
+            else
+            {
+                symptom4 = textBox4.Text;
             }
         }
     }
