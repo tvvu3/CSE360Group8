@@ -191,5 +191,10 @@ namespace Healthcare_System
                 condition4 = radioButton12.Text;
             }
         }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
     }
 }
