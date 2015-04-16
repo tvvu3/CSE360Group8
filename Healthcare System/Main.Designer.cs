@@ -40,7 +40,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(109, 9);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 0;
@@ -102,7 +102,7 @@
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(73, 23);
             this.button6.TabIndex = 6;
-            this.button6.Text = "Feedback";
+            this.button6.Text = "Fedback";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 

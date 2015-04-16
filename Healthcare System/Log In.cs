@@ -32,79 +32,72 @@ namespace Healthcare_System
 
         private void button1_Click(object sender, EventArgs e)
         {
-            try
+            FileStream fs = new FileStream(System.Environment.CurrentDirectory + @"Data.txt", FileMode.Open, FileAccess.Read);
+            StreamReader sr = new StreamReader(fs);
+            string line = sr.ReadToEnd();
+            sr.Close();
+            fs.Close();
+
+            string[] item = line.Split('\t');
+            string email = item[0];
+            string password = item[1];
+            string position = item[2];
+
+            if (email == textBox1.Text && password == textBox2.Text)
             {
-                FileStream fs = new FileStream(System.Environment.CurrentDirectory + @"Data.txt", FileMode.Open, FileAccess.Read);
-                StreamReader sr = new StreamReader(fs);
-                string line = sr.ReadToEnd();
-                sr.Close();
-                fs.Close();
-
-                string[] item = line.Split('\t');
-                string email = item[1];
-                string password = item[2];
-                string position = item[3];
-
-                if (email == textBox1.Text && password == textBox2.Text)
+                if (position == "User")
                 {
-                    if (position == "User")
-                    {
-                        Main main = new Main();
-                        main.Show();
-                        this.Hide();
-                    }
-                    else
-                    {
-                        Main_HP mainhcp = new Main_HP();
-                        mainhcp.Show();
-                        this.Hide();
-                    }
+                    Main main = new Main();
+                    main.Show();
+                    this.Hide();
                 }
                 else
                 {
-                    if (MessageBox.Show("Email or Password is Incorrect", "Error", MessageBoxButtons.OK) == DialogResult.OK)
-                    {
-                        textBox1.Text = null;
-                        textBox2.Text = null;
-                    }
+                    Main_HCP mainhcp = new Main_HCP();
+                    mainhcp.Show();
+                    this.Hide();
                 }
             }
-            catch
+            else
             {
-                MessageBox.Show("You have not sign up", "Error", MessageBoxButtons.OK);
+                if (MessageBox.Show("Email or Password is Incorrect", "Error", MessageBoxButtons.OK) == DialogResult.OK)
+                {
+                    textBox1.Text = null;
+                    textBox2.Text = null;
+                }
             }
+             
         }
+
         private void button2_Click(object sender, EventArgs e)
         {
-            try
+            FileStream fs = new FileStream(System.Environment.CurrentDirectory + @"Data.txt", FileMode.Open, FileAccess.Read);
+            StreamReader sr = new StreamReader(fs);
+            string line = sr.ReadToEnd();
+            sr.Close();
+            fs.Close();
+
+            string[] item = line.Split('\t');
+            string email = item[0];
+            string password = item[1];
+
+            if (textBox1.Text == email)
             {
-                FileStream fs = new FileStream(System.Environment.CurrentDirectory + @"Data.txt", FileMode.Open, FileAccess.Read);
-                StreamReader sr = new StreamReader(fs);
-                string line = sr.ReadToEnd();
-                sr.Close();
-                fs.Close();
-
-                string[] item = line.Split('\t');
-                string email = item[1];
-                string password = item[2];
-
-                if (textBox1.Text == email)
+                MessageBox.Show(String.Format("Your password is: {0}", password), "Retrieved", MessageBoxButtons.OK);
+            }
+            else
+            {
+                if (MessageBox.Show("Email Address Does Not Exist", "Error", MessageBoxButtons.OK) == DialogResult.OK)
                 {
-                    MessageBox.Show(String.Format("Your password is: {0}", password), "Retrieved", MessageBoxButtons.OK);
-                }
-                else
-                {
-                    if (MessageBox.Show("Email Address Does Not Exist", "Error", MessageBoxButtons.OK) == DialogResult.OK)
-                    {
-                        textBox1.Text = null;
-                        textBox2.Text = null;
-                    }
+                    textBox1.Text = null;
+                    button2.Visible = false;
                 }
             }
-            catch
-            {
-                MessageBox.Show("You have not sign up", "Error", MessageBoxButtons.OK);
-            }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            button2.Visible = true;
         }
     }
 }
